@@ -144,6 +144,14 @@ function selectFilter(category) {
   filterMarkers(category);
 }
 
+// Filter markers by category
+function filterMarkers(category) {
+  const normalized = category.toLowerCase();
+  allMarkers.forEach(marker => {
+    marker.setVisible(marker.category.includes(normalized));
+  });
+}
+
 function locateUser() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
