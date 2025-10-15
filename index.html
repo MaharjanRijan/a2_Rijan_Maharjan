@@ -70,36 +70,56 @@
         </div>
 
 
-        <!-- Directions Section -->
-        <div class="accordion-item">
+           <!-- Directions Section -->
+          <div class="accordion-item">
             <h2 class="accordion-header" id="headingDirections">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapseDirections" aria-expanded="false" aria-controls="collapseDirections">
-                    <i class="fas fa-directions me-2"></i> Get Directions
-                </button>
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDirections" aria-expanded="false" aria-controls="collapseDirections">
+                <i class="fas fa-directions me-2"></i> Get Directions
+              </button>
             </h2>
-            <div id="collapseDirections" class="accordion-collapse collapse" aria-labelledby="headingDirections"
-                data-bs-parent="#sidebarAccordion">
-                <div class="accordion-body">
-                    <!-- Origin input -->
-                    <input type="text" id="originInput" class="form-control mb-2" placeholder="Your location" />
-
-                    <!-- Destination input -->
-                    <input type="text" id="destinationInput" class="form-control mb-2" placeholder="Health center" />
-
-                    <!-- Get Directions button -->
-                    <button class="btn btn-primary w-100" onclick="getDirection()">
-                        <i class="fas fa-route"></i> Show Route
-                    </button>
-
-                    <!-- Clear Route button -->
-                    <button class="btn btn-outline-secondary w-100 mt-2" onclick="clearDirection()">
-                        <i class="fas fa-times-circle"></i> Clear Route
-                    </button>
+            <div id="collapseDirections" class="accordion-collapse collapse" aria-labelledby="headingDirections" data-bs-parent="#sidebarAccordion">
+              <div class="accordion-body">
+                <!-- Toggle: Use My Location -->
+                <div class="form-check form-switch mb-2">
+                  <input class="form-check-input" type="checkbox" id="useLocationToggle" checked onchange="toggleUseMyLocation()">
+                  <label class="form-check-label" for="useLocationToggle">Use my current location</label>
                 </div>
+
+                <!-- Origin input -->
+                <input type="text" id="originInput" class="form-control mb-2" placeholder="Enter your location manually" />
+
+                <!-- Destination input -->
+                <input type="text" id="destinationInput" class="form-control mb-2" placeholder="Health center" />
+             <!-- Travel Mode Selection -->
+                <div class="mb-2">
+                  <h6 class="text-muted">Travel Mode</h6>
+                  <div id="travelModeButtons" class="btn-group w-100" role="group">
+                    <button type="button" class="btn btn-outline-secondary" data-mode="DRIVING" onclick="selectTravelMode(this)">
+                      <i class="fas fa-car"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-mode="WALKING" onclick="selectTravelMode(this)">
+                      <i class="fas fa-walking"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-mode="BICYCLING" onclick="selectTravelMode(this)">
+                      <i class="fas fa-bicycle"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-mode="TRANSIT" onclick="selectTravelMode(this)">
+                      <i class="fas fa-bus"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Get Directions button -->
+                <button class="btn btn-primary w-100" onclick="getDirections()">
+                  <i class="fas fa-route"></i> Show Route
+                </button>
+                                <!-- Clear Route button -->
+                <button class="btn btn-outline-secondary w-100 mt-2" onclick="clearDirections()">
+                  <i class="fas fa-times-circle"></i> Clear Route
+                </button>
+              </div>
             </div>
         </div>
-
 
         <!-- Add Place Section -->
 

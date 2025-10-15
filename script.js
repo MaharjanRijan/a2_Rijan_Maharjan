@@ -96,6 +96,15 @@ function initMap() {
     ]
   });
 
+  // Remove loading class when map is loaded
+  google.maps.event.addListenerOnce(map, 'idle', function() {
+    mapElement.classList.remove("loading");
+  });
+
+  directionsService = new google.maps.DirectionsService();
+  directionsRenderer = new google.maps.DirectionsRenderer();
+  directionsRenderer.setMap(map);
+
     loadHealthFacilities();
 }
 
@@ -172,6 +181,7 @@ function locateUser() {
 
 
 
+
 function clearDirections() {
   directionsRenderer.setDirections({ routes: [] });
   document.getElementById("destinationInput").value = "";
@@ -239,6 +249,52 @@ function showAllMarkers() {
   allMarkers.forEach(marker => {
     marker.setVisible(true);
   });
+}
+
+function toggleUseMyLocation() {
+  const useLocation = document.getElementById("useLocationToggle").checked;
+  const originInput = document.getElementById("originInput");
+
+  if (useLocation) {
+    originInput.style.display = "none";
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        document.getElementById("originInput").value = `${lat},${lng}`;
+      },
+      () => {
+        alert("Unable to retrieve your location.");
+      }
+    );
+  } else {
+    originInput.style.display = "block";
+    document.getElementById("originInput").value = "";
+  }
+}
+
+function selectTravelMode(button) {
+  // Remove active class from all buttons
+  const buttons = document.querySelectorAll('#travelModeButtons button');
+  buttons.forEach(btn => {
+    btn.classList.remove('btn-primary');
+    btn.classList.add('btn-outline-secondary');
+  });
+  
+  // Add active class to clicked button
+  button.classList.remove('btn-outline-secondary');
+  button.classList.add('btn-primary');
+  
+  // Store selected mode for getDirections function
+  window.selectedTravelMode = button.getAttribute('data-mode');
+}
+
+function initializeTravelMode() {
+  // Set default travel mode to DRIVING (first button)
+  const drivingButton = document.querySelector('#travelModeButtons button[data-mode="DRIVING"]');
+  if (drivingButton) {
+    selectTravelMode(drivingButton);
+  }
 }
 
 
