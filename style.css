@@ -1,0 +1,22 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Map Styles */
+#map {
+    position: fixed;
+    top: 60px;
+    left: 350px;
+    width: calc(100vw - 350px);
+    height: calc(100vh - 60px);
+    z-index: 1;
+}
