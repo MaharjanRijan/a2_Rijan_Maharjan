@@ -1,5 +1,6 @@
 let map;
 let allMarkers = [];
+let userMarkers = []; // Array to track user-added markers
 let directionsService;
 let directionsRenderer;
 
@@ -303,6 +304,57 @@ function initializeTravelMode() {
   if (drivingButton) {
     selectTravelMode(drivingButton);
   }
+}
+
+// Add a new health center marker
+function addPlace() {
+  const name = document.getElementById("placeName").value;
+  const address = document.getElementById("placeAddress").value;
+  const category = document.getElementById("placeCategory").value.toLowerCase();
+
+  if (!name || !address) {
+    alert("Please fill in all fields");
+    return;
+  }
+
+  const geocoder = new google.maps.Geocoder();
+  geocoder.geocode({ address: address }, (results, status) => {
+    if (status === "OK") {
+      const location = results[0].geometry.location;
+      const marker = new google.maps.Marker({
+        position: location,
+        map: map,
+        title: name,
+        animation: google.maps.Animation.DROP
+      });
+
+      marker.category = category;
+
+      const infoWindow = new google.maps.InfoWindow({
+        content: `
+          <div style="padding: 10px;">
+            <h6 style="margin-bottom: 10px; color: #0d6efd;">${name}</h6>
+            <p style="margin-bottom: 5px;"><strong>Type:</strong> ${category}</p>
+            <p style="margin-bottom: 0;"><strong>Address:</strong> ${address}</p>
+          </div>
+        `
+      });
+
+      marker.addListener("click", () => {
+        infoWindow.open(map, marker);
+      });
+
+      allMarkers.push(marker);
+      userMarkers.push(marker);
+      
+      // Clear form and show success message
+      clearAddPlaceForm();
+      alert("Health center added successfully!");
+      
+    } else {
+      alert("Geocoding failed: " + status);
+    }
+  });
 }
 
 

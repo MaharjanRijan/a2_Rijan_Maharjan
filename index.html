@@ -122,6 +122,30 @@
         </div>
 
         <!-- Add Place Section -->
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="headingAddPlace">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAddPlace" aria-expanded="false" aria-controls="collapseAddPlace">
+                <i class="fas fa-plus me-2"></i> Add a Health Center
+              </button>
+            </h2>
+            <div id="collapseAddPlace" class="accordion-collapse collapse" aria-labelledby="headingAddPlace" data-bs-parent="#sidebarAccordion">
+              <div class="accordion-body">
+                <input type="text" id="placeName" class="form-control mb-2" placeholder="Name" />
+                <input type="text" id="placeAddress" class="form-control mb-2" placeholder="Address" />
+                <select id="placeCategory" class="form-select mb-2">
+                <option value="walk-in">Walk-In</option>
+                <option value="community">Community</option>
+                <option value="emergency">Emergency</option>
+                <option value="mental">Mental Health</option>
+                </select>
+                <button class="btn btn-success w-100" onclick="addPlace()">
+                <i class="fas fa-plus-circle"></i> Add Place
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
 
     </div>
 
