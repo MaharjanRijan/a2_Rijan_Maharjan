@@ -1,14 +1,16 @@
 <!-- A simple and responsive map-based application to help users locate healthcares near Hamilton, Ontario. -->
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-     <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>HealMap</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    </head>
+</head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light px-3">
         <a class="navbar-brand" href="#">
@@ -16,28 +18,30 @@
             HealMap
         </a>
     </nav>
-    
-    <!-- Sidebar -->
-     <div id="sidebar" class="sidebar">
-        <!--Locate Me, filters, Directions, and add place form-->
-    <!-- Locate Me -->
-     <div class="mb-4">
-        <h5><i class="fas fa-location-arrow"></i> Locate Me</h5>
-        <button class="btn btn-outline-info w-100" onclick="locateUser()">
-            <i class="fas fa-crosshairs"></i> Use My Location
-        </button>
-    </div>
 
-    <div class="accordion" id="sidebarAccordion"></div>
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <!--Locate Me, filters, Directions, and add place form-->
+        <!-- Locate Me -->
+        <div class="mb-4">
+            <h5><i class="fas fa-location-arrow"></i> Locate Me</h5>
+            <button class="btn btn-outline-info w-100" onclick="locateUser()">
+                <i class="fas fa-crosshairs"></i> Use My Location
+            </button>
+        </div>
+
+        <div class="accordion" id="sidebarAccordion"></div>
         <!-- Filter Section -->
 
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingFilter">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-                <i class="fas fa-filter me-2"></i> Filter by Service
-            </button>
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+                    <i class="fas fa-filter me-2"></i> Filter by Service
+                </button>
             </h2>
-            <div id="collapseFilter" class="accordion-collapse collapse" aria-labelledby="headingFilter" data-bs-parent="#sidebarAccordion">
+            <div id="collapseFilter" class="accordion-collapse collapse" aria-labelledby="headingFilter"
+                data-bs-parent="#sidebarAccordion">
                 <div class="accordion-body">
                     <div class="btn-group-vertical w-100">
                         <button class="btn btn-outline-primary" onclick="selectFilter('walk-in')">
@@ -53,7 +57,7 @@
                             <i class="fas fa-brain"></i> Mental Health
                         </button>
 
-                          <!-- Find Nearest Service -->
+                        <!-- Find Nearest Service -->
                         <div class="mt-3">
                             <h6><i class="fas fa-location-crosshairs"></i> Find Nearest</h6>
                             <button class="btn btn-info w-100" onclick="findNearestService()">
@@ -64,19 +68,52 @@
                 </div>
             </div>
         </div>
-            <!-- Directions Section -->
 
-            <!-- Add Place Section -->
-                
+
+        <!-- Directions Section -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingDirections">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseDirections" aria-expanded="false" aria-controls="collapseDirections">
+                    <i class="fas fa-directions me-2"></i> Get Directions
+                </button>
+            </h2>
+            <div id="collapseDirections" class="accordion-collapse collapse" aria-labelledby="headingDirections"
+                data-bs-parent="#sidebarAccordion">
+                <div class="accordion-body">
+                    <!-- Origin input -->
+                    <input type="text" id="originInput" class="form-control mb-2" placeholder="Your location" />
+
+                    <!-- Destination input -->
+                    <input type="text" id="destinationInput" class="form-control mb-2" placeholder="Health center" />
+
+                    <!-- Get Directions button -->
+                    <button class="btn btn-primary w-100" onclick="getDirection()">
+                        <i class="fas fa-route"></i> Show Route
+                    </button>
+
+                    <!-- Clear Route button -->
+                    <button class="btn btn-outline-secondary w-100 mt-2" onclick="clearDirection()">
+                        <i class="fas fa-times-circle"></i> Clear Route
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Add Place Section -->
+
     </div>
 
     <!-- Map Container -->
-     <div id="map"></div>
+    <div id="map"></div>
 
-     <!--Scripts-->
+    <!--Scripts-->
     <script src="script.js" async></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3_4ZDyuzo-T4aTe8oyN_Ckk85f7teLpU&map_ids=95dee93d6b472b95d2ec15b5&callback=initMap&libraries=places,geometry"></script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3_4ZDyuzo-T4aTe8oyN_Ckk85f7teLpU&map_ids=95dee93d6b472b95d2ec15b5&callback=initMap&libraries=places,geometry"></script>
 
 </body>
+
 </html>

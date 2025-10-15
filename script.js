@@ -1,5 +1,7 @@
 let map;
 let allMarkers = [];
+let directionsService;
+let directionsRenderer;
 
 // Health facilities data
 const healthFacilities = [
@@ -127,6 +129,118 @@ function loadHealthFacilities() {
     allMarkers.push(marker);
   });
 }
+
+function selectFilter(category) {
+  selectedCategory = category;
+  filterMarkers(category);
+}
+
+function locateUser() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const userLocation = `${lat},${lng}`;
+        document.getElementById("originInput").value = userLocation;
+
+        // Optional: drop a marker
+        const marker = new google.maps.Marker({
+          position: { lat, lng },
+          map: map,
+          title: "Your Location",
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 8,
+            fillColor: "#0d6efd",
+            fillOpacity: 1,
+            strokeWeight: 2,
+            strokeColor: "#ffffff"
+          }
+        });
+
+        map.panTo({ lat, lng });
+      },
+      error => {
+        alert("Unable to retrieve your location.");
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by your browser.");
+  }
+}
+
+
+
+function clearDirections() {
+  directionsRenderer.setDirections({ routes: [] });
+  document.getElementById("destinationInput").value = "";
+}
+
+function useMyLocationForDirections() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const userLocation = `${lat},${lng}`;
+        document.getElementById("originInput").value = userLocation;
+
+        // Optional: drop a marker
+        const marker = new google.maps.Marker({
+          position: { lat, lng },
+          map: map,
+          title: "Your Location",
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 8,
+            fillColor: "#0d6efd",
+            fillOpacity: 1,
+            strokeWeight: 2,
+            strokeColor: "#ffffff"
+          }
+        });
+
+        map.panTo({ lat, lng });
+      },
+      error => {
+        alert("Unable to retrieve your location.");
+      }
+    );
+  } else {
+    alert("Geolocation is not supported by your browser.");
+  }
+}
+
+
+// Get directions between two points
+function getDirections() {
+  const origin = document.getElementById("originInput").value;
+  const destination = document.getElementById("destinationInput").value;
+  const mode = window.selectedTravelMode || 'DRIVING'; // Default to DRIVING if none selected
+
+  const request = {
+    origin: origin,
+    destination: destination,
+    travelMode: google.maps.TravelMode[mode]
+  };
+
+  directionsService.route(request, (result, status) => {
+    if (status === "OK") {
+      directionsRenderer.setDirections(result);
+    } else {
+      alert("Directions request failed: " + status);
+    }
+  });
+}
+
+// Show all markers
+function showAllMarkers() {
+  allMarkers.forEach(marker => {
+    marker.setVisible(true);
+  });
+}
+
 
   // Expose initMap to global scope
 window.initMap = initMap;
