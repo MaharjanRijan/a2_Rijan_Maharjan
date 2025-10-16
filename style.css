@@ -313,3 +313,40 @@ body {
         font-size: 1.1rem;
     }
 }
+
+/* Animation for smooth transitions */
+.sidebar,
+#map {
+    transition: all 0.3s ease;
+}
+
+/* Custom Info Window Styling */
+.gm-style-iw {
+    border-radius: 8px;
+}
+
+.gm-style-iw-d {
+    overflow: hidden !important;
+}
+
+/* Info Window Content Styling */
+.info-window-content {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.facility-image {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.facility-image:hover {
+    transform: scale(1.02);
+}
+
+/* Loading state */
+#map.loading {
+    background-color: #f8f9fa;
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient x1='8%25' y1='0%25' x2='65%25' y2='23%25' id='a'%3E%3Cstop stop-color='%23007bff' offset='0%25'/%3E%3Cstop stop-color='%23007bff' stop-opacity='0' offset='100%25'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M11 18c0 1.657 1.343 3 3 3s3-1.343 3-3-1.343-3-3-3-3 1.343-3 3z' fill='url(%23a)' fill-rule='evenodd' opacity='.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+}

@@ -12,70 +12,80 @@ const healthFacilities = [
     type: "Emergency Hospital",
     contact: "905-521-2100",
     address: "237 Barton St E, Hamilton, ON L8L 2X2",
-    position: { lat: 43.2619, lng: -79.8513 }
+    position: { lat: 43.2619, lng: -79.8513 },
+    image: "images/facilities/hamilton-general-hospital.jpg"
   },
   {
     name: "St. Joseph's Healthcare Hamilton",
     type: "Emergency Hospital",
     contact: "905-522-1155",
     address: "50 Charlton Ave E, Hamilton, ON L8N 4A6",
-    position: { lat: 43.2496, lng: -79.8656 }
+    position: { lat: 43.2496, lng: -79.8656 },
+    image: "images/facilities/st-josephs-healthcare-hamilton.jpg"
   },
   {
     name: "Hamilton Family Health Team",
     type: "Community Clinic",
     contact: "905-667-4848",
     address: "123 James St N, Hamilton, ON L8R 2K8",
-    position: { lat: 43.2605, lng: -79.8671 }
+    position: { lat: 43.2605, lng: -79.8671 },
+    image: "images/facilities/hamilton-family-health-team.jpg"
   },
   {
     name: "Downtown Walk-In Clinic",
     type: "Walk-in Clinic",
     contact: "905-528-5555",
     address: "345 King St E, Hamilton, ON L8N 1C1",
-    position: { lat: 43.2542, lng: -79.8573 }
+    position: { lat: 43.2542, lng: -79.8573 },
+    image: "images/facilities/default-facility.jpg"
   },
   {
     name: "East Hamilton Community Health Centre",
     type: "Community Clinic",
     contact: "905-662-4971",
     address: "438 Hughson St N, Hamilton, ON L8L 4N5",
-    position: { lat: 43.2672, lng: -79.8551 }
+    position: { lat: 43.2672, lng: -79.8551 },
+    image: "images/facilities/east-hamilton-community-health-centre.jpg"
   },
   {
     name: "Westmount Walk-In Medical Clinic",
     type: "Walk-in Clinic",
     contact: "905-389-5555",
     address: "723 Rymal Rd W, Hamilton, ON L9B 2W2",
-    position: { lat: 43.2167, lng: -79.8994 }
+    position: { lat: 43.2167, lng: -79.8994 },
+    image: "images/facilities/westmount-walk-in-medical-clinic.jpg"
   },
   {
     name: "Mental Wellness Centre",
     type: "Mental Health Care",
     contact: "905-555-1212",
     address: "88 Locke St S, Hamilton, ON L8P 4A8",
-    position: { lat: 43.2548, lng: -79.8802 }
+    position: { lat: 43.2548, lng: -79.8802 },
+    image: "images/facilities/mental-wellness-centre.jpg"
   },
   {
     name: "McMaster University Medical Centre",
     type: "Emergency Hospital",
     contact: "905-521-2100",
     address: "1200 Main St W, Hamilton, ON L8S 4K1",
-    position: { lat: 43.2609, lng: -79.9192 }
+    position: { lat: 43.2609, lng: -79.9192 },
+    image: "images/facilities/mcmaster-university-medical-centre.jpg"
   },
   {
     name: "Kenilworth Medical Clinic",
     type: "Walk-in Clinic",
     contact: "905-547-7777",
     address: "123 Kenilworth Ave N, Hamilton, ON L8H 4S2",
-    position: { lat: 43.2489, lng: -79.8112 }
+    position: { lat: 43.2489, lng: -79.8112 },
+    image: "images/facilities/kenilworth-medical-clinic.jpg"
   },
   {
     name: "Ancaster Mental Health Centre",
     type: "Mental Health Care",
     contact: "905-648-8888",
     address: "456 Wilson St E, Ancaster, ON L9G 2C3",
-    position: { lat: 43.2275, lng: -80.0001 }
+    position: { lat: 43.2275, lng: -80.0001 },
+    image: "images/facilities/ancaster-mental-health-centre.jpg"
   }
 ];
 
@@ -107,7 +117,10 @@ function initMap() {
   directionsRenderer = new google.maps.DirectionsRenderer();
   directionsRenderer.setMap(map);
 
-    loadHealthFacilities();
+  loadHealthFacilities();
+  
+  // Initialize travel mode default to driving
+  initializeTravelMode();
 }
 
 // Load markers from healthFacilities array
@@ -124,8 +137,11 @@ function loadHealthFacilities() {
 
     const infoWindow = new google.maps.InfoWindow({
       content: `
-        <div style="padding: 10px; min-width: 200px;">
-          <h6 style="margin-bottom: 10px; color: #0d6efd;">${facility.name}</h6>
+        <div class="info-window-content" style="padding: 10px; min-width: 250px; max-width: 300px;">
+          <img src="${facility.image}" alt="${facility.name}" class="facility-image" 
+               style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;"
+               onerror="this.src='images/facilities/default-facility.jpg'">
+          <h6 style="margin-bottom: 10px; color: #0d6efd; font-weight: bold;">${facility.name}</h6>
           <p style="margin-bottom: 5px;"><strong>Type:</strong> ${facility.type}</p>
           <p style="margin-bottom: 5px;"><strong>Contact:</strong> ${facility.contact}</p>
           <p style="margin-bottom: 0;"><strong>Address:</strong> ${facility.address}</p>
@@ -466,6 +482,32 @@ function findNearestService() {
   }, () => {
     alert("Unable to retrieve your location.");
   });
+}
+
+// Clear form inputs
+function clearAddPlaceForm() {
+  document.getElementById("placeName").value = "";
+  document.getElementById("placeAddress").value = "";
+  document.getElementById("placeCategory").value = "walk-in";
+}
+
+function deleteLastUserMarker() {
+  if (userMarkers.length === 0) {
+    alert("No custom places to remove.");
+    return;
+  }
+
+  const marker = userMarkers.pop();
+  marker.setMap(null);
+  
+  // Remove from allMarkers array as well
+  const index = allMarkers.indexOf(marker);
+  if (index > -1) {
+    allMarkers.splice(index, 1);
+  }
+  
+  // Update the dropdown
+  populateDestinationDropdown();
 }
 
 
