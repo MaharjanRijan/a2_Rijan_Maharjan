@@ -139,6 +139,35 @@ function loadHealthFacilities() {
 
     allMarkers.push(marker);
   });
+  
+  // Populate the destination dropdown
+  populateDestinationDropdown();
+}
+
+// Populate destination dropdown with all health facilities
+function populateDestinationDropdown() {
+  const dropdown = document.getElementById("destinationSelect");
+  
+  // Clear existing options (except the default one)
+  dropdown.innerHTML = '<option value="">Select a health center...</option>';
+  
+  // Add all health facilities to dropdown
+  healthFacilities.forEach(facility => {
+    const option = document.createElement("option");
+    option.value = facility.address;
+    option.textContent = `${facility.name} - ${facility.type}`;
+    dropdown.appendChild(option);
+  });
+  
+  // Add user-added facilities if any
+  if (typeof userMarkers !== 'undefined' && userMarkers.length > 0) {
+    userMarkers.forEach(marker => {
+      const option = document.createElement("option");
+      option.value = marker.getPosition().toUrlValue();
+      option.textContent = `${marker.getTitle()} (User Added)`;
+      dropdown.appendChild(option);
+    });
+  }
 }
 
 function selectFilter(category) {
@@ -194,7 +223,7 @@ function locateUser() {
 
 function clearDirections() {
   directionsRenderer.setDirections({ routes: [] });
-  document.getElementById("destinationInput").value = "";
+  document.getElementById("destinationSelect").selectedIndex = 0;
 }
 
 function useMyLocationForDirections() {
@@ -233,25 +262,47 @@ function useMyLocationForDirections() {
 }
 
 
-// Get directions between two points
+// Get directions from current location to destination
 function getDirections() {
-  const origin = document.getElementById("originInput").value;
-  const destination = document.getElementById("destinationInput").value;
-  const mode = window.selectedTravelMode || 'DRIVING'; // Default to DRIVING if none selected
+  const destination = document.getElementById("destinationSelect").value;
+  
+  if (!destination) {
+    alert("Please select a health center destination.");
+    return;
+  }
 
-  const request = {
-    origin: origin,
-    destination: destination,
-    travelMode: google.maps.TravelMode[mode]
-  };
+  if (!navigator.geolocation) {
+    alert("Geolocation is not supported by this browser.");
+    return;
+  }
 
-  directionsService.route(request, (result, status) => {
-    if (status === "OK") {
-      directionsRenderer.setDirections(result);
-    } else {
-      alert("Directions request failed: " + status);
+  navigator.geolocation.getCurrentPosition(
+    position => {
+      const userLocation = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      
+      const mode = window.selectedTravelMode || 'DRIVING';
+      
+      const request = {
+        origin: userLocation,
+        destination: destination,
+        travelMode: google.maps.TravelMode[mode]
+      };
+
+      directionsService.route(request, (result, status) => {
+        if (status === "OK") {
+          directionsRenderer.setDirections(result);
+        } else {
+          alert("Directions request failed: " + status);
+        }
+      });
+    },
+    error => {
+      alert("Unable to retrieve your location for directions.");
     }
-  });
+  );
 }
 
 // Show all markers
@@ -350,6 +401,7 @@ function addPlace() {
       
       // Clear form and show success message
       clearAddPlaceForm();
+      populateDestinationDropdown(); // Update dropdown with new center
       alert("Health center added successfully!");
       
     } else {
@@ -391,8 +443,20 @@ function findNearestService() {
     });
 
     if (nearestMarker) {
-      document.getElementById("originInput").value = `${userLat},${userLng}`;
-      document.getElementById("destinationInput").value = nearestMarker.getPosition().toUrlValue();
+      // Find the corresponding dropdown option and select it
+      const dropdown = document.getElementById("destinationSelect");
+      const targetValue = nearestMarker.getPosition().toUrlValue();
+      
+      // Look for matching option by position or title
+      for (let i = 0; i < dropdown.options.length; i++) {
+        const option = dropdown.options[i];
+        if (option.value === targetValue || 
+            option.textContent.includes(nearestMarker.getTitle())) {
+          dropdown.selectedIndex = i;
+          break;
+        }
+      }
+      
       map.panTo(nearestMarker.getPosition());
       nearestMarker.setAnimation(google.maps.Animation.BOUNCE);
       setTimeout(() => nearestMarker.setAnimation(null), 1400);

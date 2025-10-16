@@ -64,6 +64,9 @@
                 data-bs-parent="#sidebarAccordion">
                 <div class="accordion-body">
                     <div class="btn-group-vertical w-100">
+                        <button class="btn btn-outline-secondary" onclick="showAllMarkers()">
+                            <i class="fas fa-eye"></i> Show All
+                        </button>
                         <button class="btn btn-outline-primary" onclick="selectFilter('walk-in')">
                             <i class="fas fa-walking"></i> Walk-In
                         </button>
@@ -99,17 +102,10 @@
             </h2>
             <div id="collapseDirections" class="accordion-collapse collapse" aria-labelledby="headingDirections" data-bs-parent="#sidebarAccordion">
               <div class="accordion-body">
-                <!-- Toggle: Use My Location -->
-                <div class="form-check form-switch mb-2">
-                  <input class="form-check-input" type="checkbox" id="useLocationToggle" checked onchange="toggleUseMyLocation()">
-                  <label class="form-check-label" for="useLocationToggle">Use my current location</label>
-                </div>
-
-                <!-- Origin input -->
-                <input type="text" id="originInput" class="form-control mb-2" placeholder="Enter your location manually" />
-
-                <!-- Destination input -->
-                <input type="text" id="destinationInput" class="form-control mb-2" placeholder="Health center" />
+                <!-- Destination dropdown -->
+                <select id="destinationSelect" class="form-select mb-2">
+                  <option value="">Select a health center...</option>
+                </select>
              <!-- Travel Mode Selection -->
                 <div class="mb-2">
                   <h6 class="text-muted">Travel Mode</h6>
