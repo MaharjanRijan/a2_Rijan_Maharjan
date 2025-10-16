@@ -98,14 +98,7 @@ function initMap() {
   map = new google.maps.Map(mapElement, {
     center: { lat: 43.2557, lng: -79.8711 },
     zoom: 13,
-    mapId: "95dee93d6b472b95d2ec15b5",
-    styles: [
-      {
-        featureType: "poi.medical",
-        elementType: "geometry.fill",
-        stylers: [{ color: "#ff6b6b" }]
-      }
-    ]
+    mapId: "95dee93d6b472b95d2ec15b5"
   });
 
   // Remove loading class when map is loaded
@@ -126,11 +119,10 @@ function initMap() {
 // Load markers from healthFacilities array
 function loadHealthFacilities() {
   healthFacilities.forEach(facility => {
-    const marker = new google.maps.Marker({
+    const marker = new google.maps.marker.AdvancedMarkerElement({
       position: facility.position,
       map: map,
       title: facility.name,
-      animation: google.maps.Animation.DROP
     });
 
     marker.category = facility.type.toLowerCase(); // Normalize for filtering
@@ -179,8 +171,8 @@ function populateDestinationDropdown() {
   if (typeof userMarkers !== 'undefined' && userMarkers.length > 0) {
     userMarkers.forEach(marker => {
       const option = document.createElement("option");
-      option.value = marker.getPosition().toUrlValue();
-      option.textContent = `${marker.getTitle()} (User Added)`;
+      option.value = marker.position.toUrlValue();
+      option.textContent = `${marker.title} (User Added)`;
       dropdown.appendChild(option);
     });
   }
@@ -195,7 +187,11 @@ function selectFilter(category) {
 function filterMarkers(category) {
   const normalized = category.toLowerCase();
   allMarkers.forEach(marker => {
-    marker.setVisible(marker.category.includes(normalized));
+    if (marker.category.includes(normalized)) {
+      marker.map = map; // Show marker
+    } else {
+      marker.map = null; // Hide marker
+    }
   });
 }
 
@@ -208,19 +204,20 @@ function locateUser() {
         const userLocation = `${lat},${lng}`;
         document.getElementById("originInput").value = userLocation;
 
+        // Create a custom pin element for user location
+        const pinElement = new google.maps.marker.PinElement({
+          background: "#0d6efd",
+          borderColor: "#ffffff",
+          glyphColor: "#ffffff",
+          scale: 1.2
+        });
+
         // Optional: drop a marker
-        const marker = new google.maps.Marker({
+        const marker = new google.maps.marker.AdvancedMarkerElement({
           position: { lat, lng },
           map: map,
           title: "Your Location",
-          icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 8,
-            fillColor: "#0d6efd",
-            fillOpacity: 1,
-            strokeWeight: 2,
-            strokeColor: "#ffffff"
-          }
+          content: pinElement.element
         });
 
         map.panTo({ lat, lng });
@@ -251,19 +248,20 @@ function useMyLocationForDirections() {
         const userLocation = `${lat},${lng}`;
         document.getElementById("originInput").value = userLocation;
 
+        // Create a custom pin element for user location
+        const pinElement = new google.maps.marker.PinElement({
+          background: "#0d6efd",
+          borderColor: "#ffffff",
+          glyphColor: "#ffffff",
+          scale: 1.2
+        });
+
         // Optional: drop a marker
-        const marker = new google.maps.Marker({
+        const marker = new google.maps.marker.AdvancedMarkerElement({
           position: { lat, lng },
           map: map,
           title: "Your Location",
-          icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 8,
-            fillColor: "#0d6efd",
-            fillOpacity: 1,
-            strokeWeight: 2,
-            strokeColor: "#ffffff"
-          }
+          content: pinElement.element
         });
 
         map.panTo({ lat, lng });
@@ -324,7 +322,7 @@ function getDirections() {
 // Show all markers
 function showAllMarkers() {
   allMarkers.forEach(marker => {
-    marker.setVisible(true);
+    marker.map = map; // Show marker
   });
 }
 
@@ -378,9 +376,10 @@ function initializeTravelMode() {
 function addPlace() {
   const name = document.getElementById("placeName").value;
   const address = document.getElementById("placeAddress").value;
+  const contact = document.getElementById("placeContact").value;
   const category = document.getElementById("placeCategory").value.toLowerCase();
 
-  if (!name || !address) {
+  if (!name || !address || !contact) {
     alert("Please fill in all fields");
     return;
   }
@@ -389,26 +388,40 @@ function addPlace() {
   geocoder.geocode({ address: address }, (results, status) => {
     if (status === "OK") {
       const location = results[0].geometry.location;
-      const marker = new google.maps.Marker({
+      
+      // Create a green pin element for user-added markers
+      const pinElement = new google.maps.marker.PinElement({
+        background: "#28a745",
+        borderColor: "#ffffff",
+        glyphColor: "#ffffff",
+        scale: 1.1
+      });
+
+      const marker = new google.maps.marker.AdvancedMarkerElement({
         position: location,
         map: map,
         title: name,
-        animation: google.maps.Animation.DROP,
-        icon: {
-          url: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
-          scaledSize: new google.maps.Size(32, 32),
-          origin: new google.maps.Point(0, 0),
-          anchor: new google.maps.Point(16, 32)
-        }
+        content: pinElement.element
       });
 
       marker.category = category;
 
+      // Format category name to match original facilities
+      const categoryNames = {
+        'walk-in': 'Walk-in Clinic',
+        'community': 'Community Clinic', 
+        'emergency': 'Emergency Hospital',
+        'mental': 'Mental Health Care'
+      };
+
       const infoWindow = new google.maps.InfoWindow({
         content: `
-          <div style="padding: 10px;">
-            <h6 style="margin-bottom: 10px; color: #0d6efd;">${name}</h6>
-            <p style="margin-bottom: 5px;"><strong>Type:</strong> ${category}</p>
+          <div class="info-window-content" style="padding: 10px; min-width: 250px; max-width: 300px;">
+            <img src="images/facilities/default-facility.jpg" alt="${name}" class="facility-image" 
+                 style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
+            <h6 style="margin-bottom: 10px; color: #0d6efd; font-weight: bold;">${name}</h6>
+            <p style="margin-bottom: 5px;"><strong>Type:</strong> ${categoryNames[category]}</p>
+            <p style="margin-bottom: 5px;"><strong>Contact:</strong> ${contact}</p>
             <p style="margin-bottom: 0;"><strong>Address:</strong> ${address}</p>
           </div>
         `
@@ -455,7 +468,7 @@ function findNearestService() {
       if (marker.category.includes(selectedCategory)) {
         const distance = google.maps.geometry.spherical.computeDistanceBetween(
           userLocation,
-          marker.getPosition()
+          marker.position
         );
         if (distance < shortestDistance) {
           shortestDistance = distance;
@@ -467,21 +480,35 @@ function findNearestService() {
     if (nearestMarker) {
       // Find the corresponding dropdown option and select it
       const dropdown = document.getElementById("destinationSelect");
-      const targetValue = nearestMarker.getPosition().toUrlValue();
+      const targetValue = nearestMarker.position.toUrlValue();
       
       // Look for matching option by position or title
       for (let i = 0; i < dropdown.options.length; i++) {
         const option = dropdown.options[i];
         if (option.value === targetValue || 
-            option.textContent.includes(nearestMarker.getTitle())) {
+            option.textContent.includes(nearestMarker.title)) {
           dropdown.selectedIndex = i;
           break;
         }
       }
       
-      map.panTo(nearestMarker.getPosition());
-      nearestMarker.setAnimation(google.maps.Animation.BOUNCE);
-      setTimeout(() => nearestMarker.setAnimation(null), 1400);
+      map.panTo(nearestMarker.position);
+      
+      // Note: AdvancedMarkerElement doesn't have setAnimation method
+      // We can add a temporary visual effect instead
+      const originalContent = nearestMarker.content;
+      const bouncePin = new google.maps.marker.PinElement({
+        background: "#ff6b6b",
+        borderColor: "#ffffff",
+        glyphColor: "#ffffff",
+        scale: 1.5
+      });
+      nearestMarker.content = bouncePin.element;
+      
+      // Reset to original after 1.4 seconds
+      setTimeout(() => {
+        nearestMarker.content = originalContent;
+      }, 1400);
     } else {
       alert("No matching service found nearby.");
     }
@@ -494,6 +521,7 @@ function findNearestService() {
 function clearAddPlaceForm() {
   document.getElementById("placeName").value = "";
   document.getElementById("placeAddress").value = "";
+  document.getElementById("placeContact").value = "";
   document.getElementById("placeCategory").value = "walk-in";
 }
 

@@ -23,22 +23,24 @@
         </button>
         <!-- Filter Buttons -->
         <div class="collapse navbar-collapse" id="navbarFilters">
-            <div class="ms-auto d-flex gap-2">
-            <button class="btn btn-outline-secondary btn-sm" onclick="showAllMarkers()">
-                <i class="fas fa-eye"></i> All
-            </button>
-            <button class="btn btn-outline-primary btn-sm" onclick="filterMarkers('walk-in')">
-                <i class="fas fa-walking"></i> Walk-In
-            </button>
-            <button class="btn btn-outline-success btn-sm" onclick="filterMarkers('community')">
-                <i class="fas fa-users"></i> Community
-            </button>
-            <button class="btn btn-outline-danger btn-sm" onclick="filterMarkers('emergency')">
-                <i class="fas fa-ambulance"></i> Emergency
-            </button>
-            <button class="btn btn-outline-warning btn-sm" onclick="filterMarkers('mental')">
-                <i class="fas fa-brain"></i> Mental Health
-            </button>
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item-container">
+                    <button class="btn btn-outline-secondary btn-sm nav-btn" onclick="showAllMarkers()">
+                        <i class="fas fa-eye"></i> <span class="btn-text">All</span>
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm nav-btn" onclick="filterMarkers('walk-in')">
+                        <i class="fas fa-walking"></i> <span class="btn-text">Walk-In</span>
+                    </button>
+                    <button class="btn btn-outline-success btn-sm nav-btn" onclick="filterMarkers('community')">
+                        <i class="fas fa-users"></i> <span class="btn-text">Community</span>
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm nav-btn" onclick="filterMarkers('emergency')">
+                        <i class="fas fa-ambulance"></i> <span class="btn-text">Emergency</span>
+                    </button>
+                    <button class="btn btn-outline-warning btn-sm nav-btn" onclick="filterMarkers('mental')">
+                        <i class="fas fa-brain"></i> <span class="btn-text">Mental Health</span>
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
@@ -113,29 +115,29 @@
              <!-- Travel Mode Selection -->
                 <div class="mb-2">
                   <h6 class="text-muted">Travel Mode</h6>
-                  <div id="travelModeButtons" class="btn-group w-100" role="group">
-                    <button type="button" class="btn btn-outline-secondary" data-mode="DRIVING" onclick="selectTravelMode(this)">
-                      <i class="fas fa-car"></i>
+                  <div id="travelModeButtons" class="btn-group w-100 d-flex flex-wrap" role="group">
+                    <button type="button" class="btn btn-outline-secondary flex-fill" data-mode="DRIVING" onclick="selectTravelMode(this)">
+                      <i class="fas fa-car"></i> <span class="d-none d-md-inline">Drive</span>
                     </button>
-                    <button type="button" class="btn btn-outline-secondary" data-mode="WALKING" onclick="selectTravelMode(this)">
-                      <i class="fas fa-walking"></i>
+                    <button type="button" class="btn btn-outline-secondary flex-fill" data-mode="WALKING" onclick="selectTravelMode(this)">
+                      <i class="fas fa-walking"></i> <span class="d-none d-md-inline">Walk</span>
                     </button>
-                    <button type="button" class="btn btn-outline-secondary" data-mode="BICYCLING" onclick="selectTravelMode(this)">
-                      <i class="fas fa-bicycle"></i>
+                    <button type="button" class="btn btn-outline-secondary flex-fill" data-mode="BICYCLING" onclick="selectTravelMode(this)">
+                      <i class="fas fa-bicycle"></i> <span class="d-none d-md-inline">Bike</span>
                     </button>
-                    <button type="button" class="btn btn-outline-secondary" data-mode="TRANSIT" onclick="selectTravelMode(this)">
-                      <i class="fas fa-bus"></i>
+                    <button type="button" class="btn btn-outline-secondary flex-fill" data-mode="TRANSIT" onclick="selectTravelMode(this)">
+                      <i class="fas fa-bus"></i> <span class="d-none d-md-inline">Transit</span>
                     </button>
                   </div>
                 </div>
 
                 <!-- Get Directions button -->
-                <button class="btn btn-primary w-100" onclick="getDirections()">
-                  <i class="fas fa-route"></i> Show Route
+                <button class="btn btn-primary w-100 mb-2" onclick="getDirections()">
+                  <i class="fas fa-route"></i> <span class="d-none d-sm-inline">Show</span> Route
                 </button>
-                                <!-- Clear Route button -->
-                <button class="btn btn-outline-secondary w-100 mt-2" onclick="clearDirections()">
-                  <i class="fas fa-times-circle"></i> Clear Route
+                <!-- Clear Route button -->
+                <button class="btn btn-outline-secondary w-100" onclick="clearDirections()">
+                  <i class="fas fa-times-circle"></i> <span class="d-none d-sm-inline">Clear</span> Route
                 </button>
               </div>
             </div>
@@ -150,19 +152,20 @@
             </h2>
             <div id="collapseAddPlace" class="accordion-collapse collapse" aria-labelledby="headingAddPlace" data-bs-parent="#sidebarAccordion">
               <div class="accordion-body">
-                <input type="text" id="placeName" class="form-control mb-2" placeholder="Name" />
-                <input type="text" id="placeAddress" class="form-control mb-2" placeholder="Address" />
+                <input type="text" id="placeName" class="form-control mb-2" placeholder="Health Center Name" />
+                <input type="text" id="placeAddress" class="form-control mb-2" placeholder="Full Address" />
+                <input type="tel" id="placeContact" class="form-control mb-2" placeholder="Contact Number (e.g., 905-123-4567)" />
                 <select id="placeCategory" class="form-select mb-2">
-                <option value="walk-in">Walk-In</option>
-                <option value="community">Community</option>
-                <option value="emergency">Emergency</option>
-                <option value="mental">Mental Health</option>
+                <option value="walk-in">Walk-In Clinic</option>
+                <option value="community">Community Clinic</option>
+                <option value="emergency">Emergency Hospital</option>
+                <option value="mental">Mental Health Care</option>
                 </select>
-                <button class="btn btn-primary w-100" onclick="addPlace()">
-                <i class="fas fa-plus-circle"></i> Add Medical Center
+                <button class="btn btn-primary w-100 mb-2" onclick="addPlace()">
+                <i class="fas fa-plus-circle"></i> <span class="d-none d-sm-inline">Add</span> <span class="d-sm-none">+</span> Center
                 </button>
-                <button class="btn btn-outline-secondary w-100 mt-2" onclick="deleteLastUserMarker()">
-                  <i class="fas fa-trash-alt"></i> Remove Last Added Medical Center
+                <button class="btn btn-outline-secondary w-100" onclick="deleteLastUserMarker()">
+                  <i class="fas fa-trash-alt"></i> <span class="d-none d-sm-inline">Remove Last</span> <span class="d-sm-none">Remove</span>
                 </button>
               </div>
             </div>
@@ -179,7 +182,7 @@
     <script src="script.js" async></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3_4ZDyuzo-T4aTe8oyN_Ckk85f7teLpU&map_ids=95dee93d6b472b95d2ec15b5&callback=initMap&libraries=places,geometry"></script>
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3_4ZDyuzo-T4aTe8oyN_Ckk85f7teLpU&map_ids=95dee93d6b472b95d2ec15b5&callback=initMap&libraries=places,geometry,marker"></script>
 
 </body>
 
