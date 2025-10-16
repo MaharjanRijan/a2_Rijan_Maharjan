@@ -3,6 +3,7 @@ let allMarkers = [];
 let userMarkers = []; // Array to track user-added markers
 let directionsService;
 let directionsRenderer;
+let selectedCategory = null;
 
 // Health facilities data
 const healthFacilities = [
@@ -354,6 +355,52 @@ function addPlace() {
     } else {
       alert("Geocoding failed: " + status);
     }
+  });
+}
+
+function findNearestService() {
+  if (!selectedCategory) {
+    alert("Please select a service type first.");
+    return;
+  }
+
+  if (!navigator.geolocation) {
+    alert("Geolocation is not supported.");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(position => {
+    const userLat = position.coords.latitude;
+    const userLng = position.coords.longitude;
+    const userLocation = new google.maps.LatLng(userLat, userLng);
+
+    let nearestMarker = null;
+    let shortestDistance = Infinity;
+
+    allMarkers.forEach(marker => {
+      if (marker.category.includes(selectedCategory)) {
+        const distance = google.maps.geometry.spherical.computeDistanceBetween(
+          userLocation,
+          marker.getPosition()
+        );
+        if (distance < shortestDistance) {
+          shortestDistance = distance;
+          nearestMarker = marker;
+        }
+      }
+    });
+
+    if (nearestMarker) {
+      document.getElementById("originInput").value = `${userLat},${userLng}`;
+      document.getElementById("destinationInput").value = nearestMarker.getPosition().toUrlValue();
+      map.panTo(nearestMarker.getPosition());
+      nearestMarker.setAnimation(google.maps.Animation.BOUNCE);
+      setTimeout(() => nearestMarker.setAnimation(null), 1400);
+    } else {
+      alert("No matching service found nearby.");
+    }
+  }, () => {
+    alert("Unable to retrieve your location.");
   });
 }
 
